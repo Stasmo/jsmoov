@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+        <meta http-equiv="cleartype" content="on">
+
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/touch/apple-touch-icon-144x144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/touch/apple-touch-icon-114x114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/touch/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="img/touch/apple-touch-icon-57x57-precomposed.png">
+        <link rel="shortcut icon" sizes="196x196" href="img/touch/touch-icon-196x196.png">
+        <link rel="shortcut icon" href="img/touch/apple-touch-icon.png">
+
+        <!-- Tile icon for Win8 (144x144 + tile color) -->
+        <meta name="msapplication-TileImage" content="img/touch/apple-touch-icon-144x144-precomposed.png">
+        <meta name="msapplication-TileColor" content="#222222">
+
+        <!-- SEO: If mobile URL is different from desktop URL, add a canonical link to the desktop page -->
+        <!--
+        <link rel="canonical" href="http://www.example.com/" >
+        -->
+
+        <!-- Add to homescreen for Chrome on Android -->
+        <!--
+        <meta name="mobile-web-app-capable" content="yes">
+        -->
+
+        <!-- For iOS web apps. Delete if not needed. https://github.com/h5bp/mobile-boilerplate/issues/94 -->
+        <!--
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="">
+        -->
+
+        <!-- This script prevents links from opening in Mobile Safari. https://gist.github.com/1042026 -->
+        <!--
+        <script>(function(a,b,c){if(c in b&&b[c]){var d,e=a.location,f=/^(a|html)$/i;a.addEventListener("click",function(a){d=a.target;while(!f.test(d.nodeName))d=d.parentNode;"href"in d&&(d.href.indexOf("http")||~d.href.indexOf(e.host))&&(a.preventDefault(),e.href=d.href)},!1)}})(document,window.navigator,"standalone")</script>
+        -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.7.1.min.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <style type="text/css">
+            /* layout/base.css */
+
+        body {
+          margin: 0;
+          background: black;
+        }
+
+        /* modules/canvas.css */
+
+        canvas {
+          height: auto;
+          max-width: 100%;
+          vertical-align: middle;
+        }
+
+        </style>
+    </head>
+    <body>
+
+        <div class="text-center" style="position: absolute; width: 100%;">
+            <h1 style="color: #fff">So you tryna get tha pipe</h1>
+            <img src="img/jash.jpg" style="max-width: 50%">
+        </div>
+
+        <script src="js/vendor/jquery-2.1.0.min.js"></script>
+        <script src="js/helper.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
+        <script type="text/javascript">
+            /* smoke.js */
+
+            class Smoke {
+
+              constructor(options) {
+                const defaults = {
+                  width: window.innerWidth,
+                  height: window.innerHeight
+                };
+
+                Object.assign(this, options, defaults);
+                this.onResize = this.onResize.bind(this);
+
+                this.addEventListeners();
+                this.init();
+              }
+
+              init() {
+                const { width, height } = this;
+
+                this.clock = new THREE.Clock();
+
+                const renderer = this.renderer = new THREE.WebGLRenderer();
+
+                renderer.setSize(width, height);
+
+                this.scene = new THREE.Scene();
+
+                const meshGeometry = new THREE.CubeGeometry(200, 200, 200);
+                const meshMaterial = new THREE.MeshLambertMaterial({
+                  color: 0xaa6666,
+                  wireframe: false
+                });
+                this.mesh = new THREE.Mesh(meshGeometry, meshMaterial);
+
+                this.cubeSineDriver = 0;
+
+                this.addCamera();
+                this.addLights();
+                this.addParticles();
+                this.addBackground();
+
+                document.body.appendChild(renderer.domElement);
+              }
+
+              evolveSmoke(delta) {
+                const { smokeParticles } = this;
+
+                let smokeParticlesLength = smokeParticles.length;
+
+                while(smokeParticlesLength--) {
+                  smokeParticles[smokeParticlesLength].rotation.z += delta * 0.2;
+                }
+              }
+
+              addLights() {
+                const { scene } = this;
+                const light = new THREE.DirectionalLight(0xffffff, 0.75);
+
+                light.position.set(-1, 0, 1);
+                scene.add(light);
+              }
+
+              addCamera() {
+                const { scene } = this;
+                const camera = this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 1, 10000);
+
+                camera.position.z = 1000;
+                scene.add(camera);
+              }
+
+              addParticles() {
+                const { scene } = this;
+                const textureLoader = new THREE.TextureLoader();
+                const smokeParticles = this.smokeParticles = [];
+
+                textureLoader.load('https://rawgit.com/marcobiedermann/playground/master/three.js/smoke-particles/dist/assets/images/clouds.png', texture => {
+                  const smokeMaterial = new THREE.MeshLambertMaterial({
+                    color: 0xffffff,
+                    map: texture,
+                    transparent: true
+                  });
+                  smokeMaterial.map.minFilter = THREE.LinearFilter;
+                  const smokeGeometry = new THREE.PlaneBufferGeometry(300, 300);
+
+                  const smokeMeshes = [];
+                  let limit = 150;
+
+                  while(limit--) {
+                    smokeMeshes[limit] = new THREE.Mesh(smokeGeometry, smokeMaterial);
+                    smokeMeshes[limit].position.set(Math.random() * 500 - 250, Math.random() * 500 - 250, Math.random() * 1000 - 100);
+                    smokeMeshes[limit].rotation.z = Math.random() * 360;
+                    smokeParticles.push(smokeMeshes[limit]);
+                    scene.add(smokeMeshes[limit]);
+                  }
+                });
+              }
+
+              addBackground() {
+                const { scene } = this;
+                const textureLoader = new THREE.TextureLoader();
+                const textGeometry = new THREE.PlaneBufferGeometry(600, 320);
+
+                textureLoader.load('https://rawgit.com/marcobiedermann/playground/master/three.js/smoke-particles/dist/assets/images/background.jpg', texture => {
+                  const textMaterial = new THREE.MeshLambertMaterial({
+                    blending: THREE.AdditiveBlending,
+                    color: 0xffffff,
+                    map: texture,
+                    opacity: 1,
+                    transparent: true
+                  });
+                  textMaterial.map.minFilter = THREE.LinearFilter;
+                  const text = new THREE.Mesh(textGeometry, textMaterial);
+
+                  text.position.z = 800;
+                  scene.add(text);
+                });
+              }
+
+              render() {
+                const { mesh } = this;
+                let { cubeSineDriver } = this;
+
+                cubeSineDriver += 0.01;
+
+                mesh.rotation.x += 0.005;
+                mesh.rotation.y += 0.01;
+                mesh.position.z = 100 + Math.sin(cubeSineDriver) * 500;
+
+                this.renderer.render(this.scene, this.camera);
+              }
+
+              update() {
+                this.evolveSmoke(this.clock.getDelta());
+                this.render();
+
+                requestAnimationFrame(this.update.bind(this));
+              }
+
+              onResize() {
+                const { camera } = this;
+
+                const windowWidth  = window.innerWidth;
+                const windowHeight = window.innerHeight;
+
+                camera.aspect = windowWidth / windowHeight;
+                camera.updateProjectionMatrix();
+
+                this.renderer.setSize(windowWidth, windowHeight);
+              }
+
+              addEventListeners() {
+                window.addEventListener('resize', this.onResize);
+              }
+
+            }
+
+            /* app.js */
+
+            const smoke = new Smoke();
+
+            smoke.update();
+
+        </script>
+
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X');ga('send','pageview');
+        </script>
+    </body>
+</html>
+
+
